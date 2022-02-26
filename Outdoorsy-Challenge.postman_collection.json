@@ -1,0 +1,44 @@
+{
+	"info": {
+		"_postman_id": "d876cffd-e96d-4598-9ced-afedc60dba4e",
+		"name": "Outdoorsy Challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Sample rental search result",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "https://search.outdoorsy.com/rentals?filter[keywords]=trailer&page[limit]=8&page[offset]=8",
+					"protocol": "https",
+					"host": [
+						"search",
+						"outdoorsy",
+						"com"
+					],
+					"path": [
+						"rentals"
+					],
+					"query": [
+						{
+							"key": "filter[keywords]",
+							"value": "trailer"
+						},
+						{
+							"key": "page[limit]",
+							"value": "8"
+						},
+						{
+							"key": "page[offset]",
+							"value": "8"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
