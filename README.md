@@ -1,6 +1,14 @@
 Outdoorsy Listings
 ## Getting Started
 
+Insatlling packages :
+
+```bash
+npm install
+# or
+yarn install
+```
+
 Run the development server:
 
 ```bash

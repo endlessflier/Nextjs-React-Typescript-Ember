@@ -6,23 +6,27 @@ import styles from '../styles/Home.module.css'
 import { Datum, Listing } from '../types/listings';
 import ReactLoading from 'react-loading';
 
+
+//function to call the outdoorsy listing api
+// accepts searchTerm, pageSize, pageOffset
 async function getListings<Listing>(
-  filter: RequestInfo, pageSize: RequestInfo, pageLimit: RequestInfo
+  filter: RequestInfo, pageSize: RequestInfo, offset: RequestInfo
 ): Promise<Listing> {
-  let url = `https://search.outdoorsy.com/rentals?filter[keywords]=${filter}&page[limit]=${pageSize}&page[offset]=${pageLimit}`;
+  let url = `https://search.outdoorsy.com/rentals?filter[keywords]=${filter}&page[limit]=${pageSize}&page[offset]=${offset}`;
   const response = await fetch(url);
   const body = await response.json();
   return body;
 }
 
 const Home: NextPage = () => {
-  const [searchTerm, setSearchTerm] = React.useState('');
-  const [pageSize, setPageSize] = React.useState(10);
-  const [listings, setListings] = React.useState<Listing>();
-  const [loading, setLoading] = React.useState(false);
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const [nextPageAvailable, setNextPageAvailable] = React.useState(true);
+  const [searchTerm, setSearchTerm] = React.useState(''); //state to capture the search term
+  const [pageSize, setPageSize] = React.useState(10);   // page size of the listings, default 10
+  const [listings, setListings] = React.useState<Listing>(); // list of listings retrived from the database
+  const [loading, setLoading] = React.useState(false); // loading state for fetching the application
+  const [currentPage, setCurrentPage] = React.useState(1); //current page of the listing
+  const [nextPageAvailable, setNextPageAvailable] = React.useState(true);  //boolean if there are more pages to be fetched
 
+  //function to fetch listing based on the searchterm
   async function getData(filter: string) {
     setLoading(true);
     const s: Listing = await getListings(filter, pageSize.toString(), (pageSize * currentPage).toString());
@@ -40,6 +44,7 @@ const Home: NextPage = () => {
   }
 
 
+  //filter the image out of the listings.included array  based on the listing id
   function getImage(s: Datum) {
     try {
       var imId = s.relationships.primary_image.data.id;
@@ -53,6 +58,7 @@ const Home: NextPage = () => {
 
   }
 
+  //search function triggered when the person hits enter
   function search(e: KeyboardEvent<HTMLInputElement>) {
     setCurrentPage(1);
     setNextPageAvailable(true);
@@ -62,6 +68,7 @@ const Home: NextPage = () => {
 
   }
 
+  //function to load the next page
   function nextPage() {
     getData(searchTerm);
   }
@@ -76,6 +83,7 @@ const Home: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
+        <h3 className={styles.maintitle}>Outdoorsy</h3>
         <input type="text" value={searchTerm} placeholder="Enter search term"
           onChange={(e) => { setSearchTerm(e.target.value) }} className={styles.inputSearchTerm} onKeyDown={search} />
         {currentPage != 1 && !loading && listings && listings.data && <p>Page {currentPage - 1}</p>}
@@ -95,7 +103,7 @@ const Home: NextPage = () => {
             ))
         }
         {
-          !loading && listings && listings.data && nextPageAvailable ?
+          !loading && listings && listings.data.length > 0 && nextPageAvailable ?
             <button onClick={nextPage} className={styles.nextbutton} disabled={loading}>Next Page</button>
             : ''
         }
